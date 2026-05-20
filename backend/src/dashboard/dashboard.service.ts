@@ -8,7 +8,7 @@ import {
   ONBOARDING_STEPS,
   ONBOARDING_DAYS_LIMIT,
 } from '../common/constants';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class DashboardService {
