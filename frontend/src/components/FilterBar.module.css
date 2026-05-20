@@ -19,7 +19,7 @@
   padding: 0.5rem 0.75rem;
   color: var(--color-white);
   font-size: var(--font-size-sm);
-  width: 220px;
+  width: 260px;
   outline: none;
   transition: var(--transition);
 }

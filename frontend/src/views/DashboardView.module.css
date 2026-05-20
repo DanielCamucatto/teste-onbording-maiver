@@ -95,6 +95,58 @@
   margin-top: var(--spacing-sm);
 }
 
+/* Skeleton styles */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.06) 25%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.06) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+
+.skeletonTitle {
+  width: 280px;
+  height: 28px;
+  margin-bottom: 0.5rem;
+}
+
+.skeletonSubtitle {
+  width: 360px;
+  height: 16px;
+}
+
+.skeletonFilter {
+  width: 300px;
+  height: 38px;
+  border-radius: 8px;
+}
+
+.skeletonStatValue {
+  width: 48px;
+  height: 32px;
+  border-radius: 4px;
+}
+
+.skeletonStatLabel {
+  width: 80px;
+  height: 12px;
+  margin-top: 4px;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 @media (max-width: 768px) {
   .stats {
     grid-template-columns: repeat(2, 1fr);

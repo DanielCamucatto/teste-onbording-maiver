@@ -1,52 +1,52 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './FilterBar.module.css';
 
 interface FilterBarProps {
-  onFilter: (consultant: string) => void;
+  onFilter: (searchTerm: string) => void;
   onClear: () => void;
 }
 
 function FilterBar({ onFilter, onClear }: FilterBarProps) {
-  const [consultantInput, setConsultantInput] = useState('');
+  const [searchInput, setSearchInput] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (consultantInput.trim()) {
-      onFilter(consultantInput.trim());
-    }
-  };
+  // Filtro dinâmico: atualiza a cada tecla digitada
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onFilter(searchInput.trim());
+    }, 200); // debounce de 200ms
+    return () => clearTimeout(timer);
+  }, [searchInput, onFilter]);
 
   const handleClear = () => {
-    setConsultantInput('');
+    setSearchInput('');
     onClear();
   };
 
   return (
-    <form className={styles.filterBar} onSubmit={handleSubmit}>
-      <label className={styles.label} htmlFor="consultant-filter">
-        Filtrar por consultor:
+    <div className={styles.filterBar}>
+      <label className={styles.label} htmlFor="search-filter">
+        🔍 Buscar:
       </label>
       <input
-        id="consultant-filter"
+        id="search-filter"
         className={styles.input}
         type="text"
-        placeholder="Nome do consultor..."
-        value={consultantInput}
-        onChange={(e) => setConsultantInput(e.target.value)}
+        placeholder="Nome da empresa ou consultor..."
+        value={searchInput}
+        onChange={(e) => setSearchInput(e.target.value)}
+        autoFocus
       />
-      <button type="submit" className={styles.filterButton}>
-        Filtrar
-      </button>
-      {consultantInput && (
+      {searchInput && (
         <button
           type="button"
           className={styles.clearButton}
           onClick={handleClear}
+          title="Limpar filtro"
         >
-          Limpar
+          ✕ Limpar
         </button>
       )}
-    </form>
+    </div>
   );
 }
 
