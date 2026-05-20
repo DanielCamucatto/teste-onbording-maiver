@@ -1,4 +1,4 @@
-{
+ {
   "compilerOptions": {
     "module": "commonjs",
     "declaration": true,
@@ -20,7 +20,7 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "test"]
