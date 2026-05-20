@@ -4,3 +4,9 @@ dist
 coverage
 *.log
 .DS_Store
+
+# TypeScript incremental build cache
+tsconfig.tsbuildinfo
+
+# Supabase CLI temp files
+supabase/.temp/
