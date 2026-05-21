@@ -10,7 +10,7 @@ interface ClientCardProps {
 
 function ClientCard({ item }: ClientCardProps) {
   const navigate = useNavigate();
-  const { client, steps, progress, status } = item;
+  const { client, steps, status } = item;
 
   const completedSteps = steps.filter((s) => s.completed).length;
   const totalSteps = steps.length;
