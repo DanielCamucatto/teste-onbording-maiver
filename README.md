@@ -281,23 +281,72 @@ teste-onbording-maiver/
 
 ### 1. Quais ferramentas de IA você usou e por quê?
 
-*Resposta em desenvolvimento...*
+**Claude (claude-3.5-sonnet) — Cursor IDE**
+
+Usei o Claude integrado ao Cursor como assistente principal de desenvolvimento por sua capacidade de entender contexto completo do projeto (arquivos abertos, estrutura, terminal). Diferente de chatbots avulsos, o Cursor permite que a IA leia arquivos específicos, execute comandos no terminal e edite código diretamente, agilizando o fluxo de trabalho.
+
+Escolhi o Claude especificamente por:
+- **Entendimento contextual**: Conseguia manter o contexto do projeto entre prompts, lembrando de decisões anteriores
+- **Geração de código funcional**: Produziu código TypeScript/React/NestJS com poucos erros de sintaxe
+- **Depuração integrada**: Quando algo quebrava, a IA podia ler logs do terminal e sugerir correções
+- **Edição direta**: Diferente de copiar/colar respostas, a IA modificava arquivos existentes preservando indentação e estrutura
 
 ### 2. Mostre 2 ou 3 prompts que você usou
 
-*Resposta em desenvolvimento...*
+**Prompt 1 — Criação inicial do backend:**
+> "Crie um projeto NestJS completo com módulos Clients, Onboarding e Dashboard. Use Supabase como banco. Inclua DTOs validação com class-validator, constantes com as 6 etapas de onboarding, e RLS policies no SQL schema. O dashboard deve calcular status: Em andamento (< 30 dias), Atrasado (> 30 dias), Concluído (6/6 etapas)."
+
+**Prompt 2 — Correção de filtro dinâmico:**
+> "Estou tentando filtrar por consultor e não estou conseguindo, nem por nome da empresa também. O FilterBar tem um input de texto, mas não está filtrando nada. Verifica o componente e o backend."
+
+**Prompt 3 — Implementação de loading skeleton:**
+> "A procura pelos responsáveis Pedro e Ana não derão certo o resto deu certo, além disso notei que o loading é aqueles antigos que ficam rodando, acho que seria mais interessante fazer em skeleton. O skeleton precisa seguir o layout completo da página: título, stats e cards."
 
 ### 3. Qual parte do MVP foi mais difícil de construir com IA?
 
-*Resposta em desenvolvimento...*
+**A parte mais desafiadora foi lidar com os mocks do Supabase nos testes unitários.**
+
+O Supabase Client usa um PostgrestQueryBuilder com encadeamento de métodos (`.from().select().eq().order()`), onde métodos intermediários retornam `this` para continuar o chain, e apenas os métodos terminais retornam Promises. 
+
+A IA gerou mocks que não capturavam corretamente esse comportamento — algumas vezes o `.select()` retornava Promise quando deveria retornar `this`, outras vezes o `.single()` não resolvia corretamente. Foram necessárias 5 rodadas de correção até que os 25 testes passassem.
+
+**Outro desafio** foi o filtro dinâmico. Inicialmente o FilterBar usava `onSubmit` (submissão de formulário), e a IA sugeriu trocar para `onChange` com debounce. A implementação inicial causava loops de renderização porque o `useEffect` no FilterBar chamava `onFilter` que atualizava o estado pai que re-renderizava o FilterBar. Foi preciso usar `useCallback` e debounce de 200ms para estabilizar.
 
 ### 4. O que você escolheu não construir?
 
-*Resposta em desenvolvimento...*
+Por ser um MVP, deliberadamente optei por **não implementar**:
+
+- **Autenticação/autorização**: O sistema atual permite acesso anônimo completo (RLS com permissão para `anon`). Em produção, seria necessário login com Supabase Auth e políticas por consultor.
+- **CRUD completo de etapas**: Não é possível editar o nome das etapas, reordená-las ou adicionar etapas customizadas. O checklist é fixo com 6 etapas.
+- **Notificações**: Não há alertas por e-mail ou notificação quando um onboarding está próximo do vencimento.
+- **Histórico de alterações**: Não há logs de quem alterou o quê e quando.
+- **Dashboard com gráficos**: O dashboard mostra apenas cards e estatísticas numéricas, sem gráficos de evolução temporal.
+- **Paginação**: Com poucos clientes no MVP, não implementei paginação na listagem.
+- **Modo escuro**: A UI já nasceu escura (dark mode), mas sem toggle para light mode.
+- **Testes de frontend**: Embora configurados (Vitest + Testing Library), não foram implementados por questão de escopo.
+- **CI/CD**: Pipeline de integração contínua não foi configurada.
 
 ### 5. O que você faria diferente?
 
-*Resposta em desenvolvimento...*
+**Usaria o Supabase Client SDK de forma mais direta**
+
+Em vez de criar uma estrutura NestJS com providers customizados (injeção do `SUPABASE_CLIENT`), usaria o **Supabase Client diretamente nos serviços** com o módulo `@supabase/supabase-js` sem camadas extras de abstração. Isso teria simplificado os mocks nos testes e reduzido a complexidade do código.
+
+**Testaria o mock do Supabase antes de escrever os services**
+
+O maior gargalo foi o mock do PostgrestQueryBuilder. Se eu tivesse verificado primeiro como mockar corretamente o encadeamento de métodos do Supabase, teria economizado várias iterações de correção nos testes. Sugiro para projetos futuros: criar um **helper de mock do Supabase** reutilizável.
+
+**Usaria debounce no frontend desde o início**
+
+O filtro começou com `onSubmit` e depois migrou para `onChange` com debounce. Se tivesse implementado com debounce desde o começo, teria evitado a refatoração do FilterBar.
+
+**Separaria as responsabilidades do dashboard**
+
+O cálculo de status (`calculateStatus`) está dentro do `DashboardService` como método privado. Para testabilidade, deveria ser um **helper/service separado** ou exportado. Tive que testá-lo indiretamente via `getDashboard()`, o que tornou os testes mais verbosos.
+
+**Adicionaria tipagem mais rigorosa**
+
+Os DTOs usam `class-validator`, mas as respostas do Supabase são tipadas como `as Client[]` ou `as OnboardingStep[]`. Um schema de validação com Zod ou uma camada de transformação teria dado mais segurança.
 
 ---
 
