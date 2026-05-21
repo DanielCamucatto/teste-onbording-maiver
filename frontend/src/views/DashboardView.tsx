@@ -136,10 +136,33 @@ function DashboardView() {
             </div>
           </div>
 
-          <div className={styles.grid}>
-            {filteredData.map((item) => (
-              <ClientCard key={item.client.id} item={item} />
-            ))}
+          <div className={styles.boardColumns}>
+            <div className={styles.column}>
+              <h3 className={styles.columnTitle}>Atrasados</h3>
+              <div className={styles.columnList}>
+                {filteredData.filter((item) => item.status === 'Atrasado').map((item) => (
+                  <ClientCard key={item.client.id} item={item} />
+                ))}
+              </div>
+            </div>
+
+            <div className={styles.column}>
+              <h3 className={styles.columnTitle}>Em Andamento</h3>
+              <div className={styles.columnList}>
+                {filteredData.filter((item) => item.status === 'Em andamento').map((item) => (
+                  <ClientCard key={item.client.id} item={item} />
+                ))}
+              </div>
+            </div>
+
+            <div className={styles.column}>
+              <h3 className={styles.columnTitle}>Concluídos</h3>
+              <div className={styles.columnList}>
+                {filteredData.filter((item) => item.status === 'Concluído').map((item) => (
+                  <ClientCard key={item.client.id} item={item} />
+                ))}
+              </div>
+            </div>
           </div>
         </>
       )}

@@ -2,57 +2,40 @@ import { useState } from 'react';
 import styles from './FilterBar.module.css';
 
 interface FilterBarProps {
-  onFilter: (consultant: string, companyName: string) => void;
+  onFilter: (term: string) => void;
   onClear: () => void;
 }
 
 function FilterBar({ onFilter, onClear }: FilterBarProps) {
-  const [consultantInput, setConsultantInput] = useState('');
-  const [companyInput, setCompanyInput] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onFilter(consultantInput.trim(), companyInput.trim());
+    onFilter(searchTerm.trim());
   };
 
   const handleClear = () => {
-    setConsultantInput('');
-    setCompanyInput('');
+    setSearchTerm('');
     onClear();
   };
 
   return (
     <form className={styles.filterBar} onSubmit={handleSubmit}>
       <div className={styles.filterGroup}>
-        <label className={styles.label} htmlFor="company-filter">
-          Empresa:
-        </label>
         <input
-          id="company-filter"
+          id="search-filter"
           className={styles.input}
+          style={{ width: '400px' }}
           type="text"
-          placeholder="Nome da empresa..."
-          value={companyInput}
-          onChange={(e) => setCompanyInput(e.target.value)}
-        />
-      </div>
-      <div className={styles.filterGroup}>
-        <label className={styles.label} htmlFor="consultant-filter">
-          Consultor:
-        </label>
-        <input
-          id="consultant-filter"
-          className={styles.input}
-          type="text"
-          placeholder="Nome do consultor..."
-          value={consultantInput}
-          onChange={(e) => setConsultantInput(e.target.value)}
+          placeholder="Buscar por empresa, consultor ou responsável..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
       <button type="submit" className={styles.filterButton}>
         Filtrar
       </button>
-      {(consultantInput || companyInput) && (
+      {searchTerm && (
         <button
           type="button"
           className={styles.clearButton}
