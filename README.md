@@ -229,23 +229,48 @@ cd frontend && npm test
 
 ## 🚀 Deploy
 
-### Frontend (Vercel)
+### Frontend (Netlify)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
+**Frontend deployado via Netlify CLI:**
 
-1. Conecte o repositório na Vercel
-2. Diretório: `frontend`
-3. Build command: `npm run build`
-4. Output directory: `dist`
-5. Adicione variável de ambiente (se necessário)
+```bash
+cd frontend && ntl deploy --build --prod
+```
+
+**URL de producao:** [https://zippy-syrniki-637494.netlify.app](https://zippy-syrniki-637494.netlify.app)
 
 ### Backend (Render)
 
-1. Crie um **Web Service** no [Render](https://render.com)
-2. Root directory: `backend`
-3. Build command: `npm install && npm run build`
-4. Start command: `node dist/main.js`
-5. Adicione as variáveis de ambiente do `.env`
+**Backend deployado via GitHub (push automatico):**
+
+O Render esta conectado ao repositorio GitHub. A cada push na branch `main`, o Render:
+1. Clona o repositorio
+2. Executa `npm install && npm run build`
+3. Inicia com `node dist/main.js`
+
+**URL de producao:** [https://maiver-onboarding-backend.onrender.com](https://maiver-onboarding-backend.onrender.com)
+
+### Pipeline CI/CD (GitHub Actions)
+
+O repositorio possui uma pipeline automatizada em `.github/workflows/ci-cd.yml`:
+
+```yaml
+# Fluxo:
+# 1. Push na main -> dispara pipeline
+# 2. test-backend: type check + testes unitarios + build
+# 3. test-frontend: type check + build
+# 4. deploy-frontend: deploy automatico no Netlify
+```
+
+**Secrets necessarios no GitHub (Settings > Secrets and variables > Actions):**
+
+| Secret | Descricao |
+|--------|-----------|
+| `NETLIFY_AUTH_TOKEN` | Token de acesso do Netlify |
+| `NETLIFY_SITE_ID` | ID do site no Netlify |
+| `VITE_API_URL` | URL do backend no Render |
+
+> **Nota:** O backend do Render usa deploy automatico via integracao nativa com GitHub, sem necessidade de Deploy Hook.
 
 ## 📁 Estrutura do Projeto
 
