@@ -96,8 +96,6 @@ jobs:
 
       - name: Build frontend
         run: cd frontend && npm run build
-        env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v3.0
