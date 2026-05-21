@@ -349,7 +349,7 @@ Por ser um MVP, deliberadamente optei por **não implementar**:
 - **Paginação**: Com poucos clientes no MVP, não implementei paginação na listagem.
 - **Modo escuro**: A UI já nasceu escura (dark mode), mas sem toggle para light mode.
 - **Testes de frontend**: Embora configurados (Vitest + Testing Library), não foram implementados por questão de escopo.
-- **CI/CD**: Pipeline de integração contínua não foi configurada.
+- **CI/CD**: Pipeline de integração contínua configurada com GitHub Actions (.github/workflows/ci-cd.yml). A cada push na main, os testes rodam automaticamente e, se passarem, o frontend é deployado no Netlify. O backend faz deploy automático via integração nativa do Render com o GitHub.
 
 ### 5. O que você faria diferente?
 
