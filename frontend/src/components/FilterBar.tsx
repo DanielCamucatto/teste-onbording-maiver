@@ -1,52 +1,67 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import styles from './FilterBar.module.css';
 
 interface FilterBarProps {
-  onFilter: (searchTerm: string) => void;
+  onFilter: (consultant: string, companyName: string) => void;
   onClear: () => void;
 }
 
 function FilterBar({ onFilter, onClear }: FilterBarProps) {
-  const [searchInput, setSearchInput] = useState('');
+  const [consultantInput, setConsultantInput] = useState('');
+  const [companyInput, setCompanyInput] = useState('');
 
-  // Filtro dinâmico: atualiza a cada tecla digitada
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onFilter(searchInput.trim());
-    }, 200); // debounce de 200ms
-    return () => clearTimeout(timer);
-  }, [searchInput, onFilter]);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onFilter(consultantInput.trim(), companyInput.trim());
+  };
 
   const handleClear = () => {
-    setSearchInput('');
+    setConsultantInput('');
+    setCompanyInput('');
     onClear();
   };
 
   return (
-    <div className={styles.filterBar}>
-      <label className={styles.label} htmlFor="search-filter">
-        🔍 Buscar:
-      </label>
-      <input
-        id="search-filter"
-        className={styles.input}
-        type="text"
-        placeholder="Nome da empresa ou consultor..."
-        value={searchInput}
-        onChange={(e) => setSearchInput(e.target.value)}
-        autoFocus
-      />
-      {searchInput && (
+    <form className={styles.filterBar} onSubmit={handleSubmit}>
+      <div className={styles.filterGroup}>
+        <label className={styles.label} htmlFor="company-filter">
+          Empresa:
+        </label>
+        <input
+          id="company-filter"
+          className={styles.input}
+          type="text"
+          placeholder="Nome da empresa..."
+          value={companyInput}
+          onChange={(e) => setCompanyInput(e.target.value)}
+        />
+      </div>
+      <div className={styles.filterGroup}>
+        <label className={styles.label} htmlFor="consultant-filter">
+          Consultor:
+        </label>
+        <input
+          id="consultant-filter"
+          className={styles.input}
+          type="text"
+          placeholder="Nome do consultor..."
+          value={consultantInput}
+          onChange={(e) => setConsultantInput(e.target.value)}
+        />
+      </div>
+      <button type="submit" className={styles.filterButton}>
+        Filtrar
+      </button>
+      {(consultantInput || companyInput) && (
         <button
           type="button"
           className={styles.clearButton}
           onClick={handleClear}
-          title="Limpar filtro"
         >
-          ✕ Limpar
+          Limpar
         </button>
       )}
-    </div>
+    </form>
   );
 }
 

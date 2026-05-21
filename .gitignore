@@ -10,3 +10,8 @@ tsconfig.tsbuildinfo
 
 # Supabase CLI temp files
 supabase/.temp/
+
+# Netlify local config
+frontend/.netlify/
+# Local env secrets
+.env.local
